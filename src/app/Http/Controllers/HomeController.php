@@ -9,11 +9,6 @@ class HomeController extends Controller
 {
     public function index(): View
     {
-        return view(
-            'home.index',
-            [
-                'title' => 'Homepage',
-            ]
-        );
+        return view('home.index', ['title' => '2. Praktiskais darbs',]);
     }
 }

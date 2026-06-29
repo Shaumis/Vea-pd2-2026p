@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Voicebank_Name;
+use App\Models\Voicebank;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -11,52 +11,45 @@ class VoicebankController extends Controller
 {
     public function list(): View
     {
-        $items = Voicebank_Name::orderBy('id', 'asc')->get();
+        $items = Voicebank::orderBy('id', 'asc')->get(); // Updated here
 
-        return view(
-            'Voicebank_Name.list',
-            [
-                'title' => 'Voicebanks',
-                'items' => $items,
-            ]
-        );
+        return view('voicebank.list', [
+            'title' => 'Voicebanks',
+            'items' => $items,
+        ]);
     }
 
     public function create(): View
     {
-        return view(
-            'Voicebank_Name.form',
-            [
-                'title' => 'Pievienot VoiceBank',
-                'voicebank' => new Voicebank_Name()
-            ]
-        );
+        return view('voicebank.form', [
+            'title' => 'Pievienot VoiceBank',
+            'voicebank' => new Voicebank() // Updated here
+        ]);
     }
+
     public function put(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $voicebanks = new Voicebank_Name();
+        $voicebanks = new Voicebank(); // Updated here
         $voicebanks->name = $validatedData['name'];
         $voicebanks->save();
 
         return redirect('/voicebanks');
     }
 
-    public function update(Voicebank_Name $voicebank): View
+    // Update type-hints for Route Model Binding:
+    public function update(Voicebank $voicebank): View
     {
-        return view(
-            'Voicebank_Name.form',
-            [
-                'title' => 'Edit voicebank',
-                'voicebank' => $voicebank
-            ]
-        );
+        return view('voicebank.form', [
+            'title' => 'Edit voicebank',
+            'voicebank' => $voicebank
+        ]);
     }
 
-    public function patch(Voicebank_Name $voicebank, Request $request): RedirectResponse
+    public function patch(Voicebank $voicebank, Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -67,11 +60,10 @@ class VoicebankController extends Controller
 
         return redirect('/voicebanks');
     }
-    public function delete(Voicebank_Name $voicebank): RedirectResponse
+
+    public function delete(Voicebank $voicebank): RedirectResponse
     {
-        // šeit derētu pārbaude, kas neļauj dzēst autoru, ja tas piesaistīts eksistējošām grāmatām
         $voicebank->delete();
         return redirect('/voicebanks');
     }
-
 }
